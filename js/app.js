@@ -175,6 +175,10 @@ const App = (() => {
     playTrack(prev);
   }
 
+  /* ─── Skip 10s ───────────────────────────────── */
+  function skipFwd() { Player.seek(Player.currentTime + 10); }
+  function skipBack() { Player.seek(Player.currentTime - 10); }
+
   /* ─── Up Next helper ─────────────────────────── */
   function _getUpNext() {
     const start = STATE.currentIndex + 1;
@@ -567,6 +571,8 @@ const App = (() => {
     togglePlay,
     nextTrack,
     prevTrack,
+    skipFwd,
+    skipBack,
     toggleShuffle,
     cycleRepeat,
     setVolume,

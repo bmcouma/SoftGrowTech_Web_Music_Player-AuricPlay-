@@ -99,7 +99,9 @@
         <div class="pb-controls">
           <button class="pb-btn"       id="shuffleBtn"  onclick="App.toggleShuffle()" title="Shuffle (S)">⇄</button>
           <button class="pb-btn"       id="prevBtn"     onclick="App.prevTrack()"     title="Previous (P)">⏮</button>
+          <button class="pb-btn"       id="skipBackBtn" onclick="App.skipBack()"      title="Skip Back 10s (←)">−10s</button>
           <button class="pb-btn pb-play" id="playBtn"   onclick="App.togglePlay()"    title="Play/Pause (Space)">▶</button>
+          <button class="pb-btn"       id="skipFwdBtn"  onclick="App.skipFwd()"       title="Skip Forward 10s (→)">+10s</button>
           <button class="pb-btn"       id="nextBtn"     onclick="App.nextTrack()"     title="Next (N)">⏭</button>
           <button class="pb-btn"       id="repeatBtn"   onclick="App.cycleRepeat()"   title="Repeat (R)">↺</button>
         </div>
@@ -148,7 +150,9 @@
           </div>
           <div class="fs-controls">
             <button class="pb-btn" id="fsPrevBtn"   onclick="App.prevTrack()">⏮</button>
+            <button class="pb-btn" id="fsSkipBack"  onclick="App.skipBack()" title="Skip Back 10s">−10s</button>
             <button class="pb-btn pb-play lg" id="fsPlayBtn" onclick="App.togglePlay()">▶</button>
+            <button class="pb-btn" id="fsSkipFwd"   onclick="App.skipFwd()" title="Skip Forward 10s">+10s</button>
             <button class="pb-btn" id="fsNextBtn"   onclick="App.nextTrack()">⏭</button>
           </div>
           <div class="fs-progress">
