@@ -45,6 +45,12 @@ const App = (() => {
     isFullscreen:false,
     searchTimer: null,
     genreCache:  {},      // genreQuery → tracks[]
+
+    // User Settings
+    settings: {
+      crossfadeDuration: 2, // seconds
+      sortOrder: 'default',
+    },
   };
 
   /* ─── LocalStorage ───────────────────────────── */
@@ -58,6 +64,7 @@ const App = (() => {
         library:   STATE.library.slice(0, 200),
         shuffleMode: STATE.shuffleMode,
         repeatMode:  STATE.repeatMode,
+        settings:    STATE.settings,
       }));
     } catch (_) {}
   }
@@ -72,6 +79,7 @@ const App = (() => {
       if (saved.library)   STATE.library   = saved.library;
       if (saved.shuffleMode !== undefined) STATE.shuffleMode = saved.shuffleMode;
       if (saved.repeatMode)  STATE.repeatMode  = saved.repeatMode;
+      if (saved.settings)    STATE.settings    = { ...STATE.settings, ...saved.settings };
     } catch (_) {}
   }
 
@@ -109,7 +117,9 @@ const App = (() => {
     const track = STATE.playlist[index];
     if (!track) return;
 
-    const ok = await Player.load(track);
+    // Use setting (convert s to ms)
+    const fadeMs = (STATE.settings.crossfadeDuration || 0) * 1000;
+    const ok = await Player.load(track, fadeMs);
     if (!ok) { toast('Preview unavailable for this track.'); return; }
 
     STATE.currentIndex = index;
@@ -173,6 +183,23 @@ const App = (() => {
     if (Player.currentTime > 3) { Player.seek(0); return; }
     const prev = (STATE.currentIndex - 1 + STATE.playlist.length) % STATE.playlist.length;
     playTrack(prev);
+  }
+
+  /* ─── Update Setting ─────────────────────────── */
+  function updateSetting(key, val) {
+    if (STATE.settings[key] !== undefined) {
+      STATE.settings[key] = val;
+      _saveState();
+      
+      // Dynamic updates if needed
+      if (key === 'crossfadeDuration') {
+        // will be read by player.js on next fade
+      }
+      
+      if (key === 'sortOrder' && STATE.currentView === 'library') {
+        navigate('library'); // re-render
+      }
+    }
   }
 
   /* ─── Skip 10s ───────────────────────────────── */
@@ -293,9 +320,16 @@ const App = (() => {
         }, 100);
         break;
 
-      case 'library':
-        container.innerHTML = UI.renderLibrary(STATE.library, cid, fav);
+      case 'library': {
+        let sorted = [...STATE.library];
+        const ord = STATE.settings.sortOrder;
+        if (ord === 'az') sorted.sort((a,b) => a.title.localeCompare(b.title));
+        else if (ord === 'za') sorted.sort((a,b) => b.title.localeCompare(a.title));
+        else if (ord === 'artist') sorted.sort((a,b) => a.artist.localeCompare(b.artist));
+        
+        container.innerHTML = UI.renderLibrary(sorted, cid, fav);
         break;
+      }
 
       case 'favorites':
         container.innerHTML = UI.renderFavorites(
@@ -305,6 +339,10 @@ const App = (() => {
 
       case 'history':
         container.innerHTML = UI.renderHistory(STATE.history, cid, fav);
+        break;
+
+      case 'settings':
+        container.innerHTML = UI.renderSettings(STATE.settings);
         break;
     }
   }
@@ -583,6 +621,7 @@ const App = (() => {
     submitSearch,
     clearQueue,
     toggleFullscreen,
+    updateSetting,
     toast,
     // expose state for debugging
     get state() { return STATE; },

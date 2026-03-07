@@ -79,14 +79,14 @@ const Player = (() => {
   }
 
   /* ─── Load a track ───────────────────────────── */
-  async function load(track) {
+  async function load(track, fadeDurationMs = 250) {
     if (!track || !track.previewUrl) {
       console.error('[AuricPlay Player] No preview URL for track:', track);
       return false;
     }
     // Crossfade out
     if (!audio.paused && audio.currentTime > 0) {
-      await _fadeTo(0, 250);
+      await _fadeTo(0, fadeDurationMs);
     }
     audio.pause();
     audio.currentTime = 0;

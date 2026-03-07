@@ -241,6 +241,68 @@ const UI = (() => {
       </div>`;
   }
 
+  /* SETTINGS VIEW */
+  function renderSettings(settings) {
+    return `
+      <div class="view-enter">
+        <div class="view-header">
+          <div class="view-title">Settings</div>
+          <div class="view-subtitle">Customize your AuricPlay experience</div>
+        </div>
+        
+        <div class="settings-grid">
+          <!-- Playback Settings -->
+          <div class="settings-section">
+            <h3 class="settings-section-title">Playback</h3>
+            
+            <div class="settings-item">
+              <div class="settings-item-info">
+                <div class="settings-item-label">Crossfade Duration</div>
+                <div class="settings-item-desc">Smoothly transition between tracks</div>
+              </div>
+              <div class="settings-item-control">
+                <span id="crossfadeVal">${settings.crossfadeDuration}s</span>
+                <input type="range" min="0" max="10" step="1" 
+                       value="${settings.crossfadeDuration}" 
+                       oninput="App.updateSetting('crossfadeDuration', this.value); document.getElementById('crossfadeVal').textContent = this.value + 's'">
+              </div>
+            </div>
+          </div>
+
+          <!-- Appearance / Library Settings -->
+          <div class="settings-section">
+            <h3 class="settings-section-title">Library</h3>
+            
+            <div class="settings-item">
+              <div class="settings-item-info">
+                <div class="settings-item-label">Sort Library By</div>
+                <div class="settings-item-desc">How your songs are organized</div>
+              </div>
+              <div class="settings-item-control">
+                <select onchange="App.updateSetting('sortOrder', this.value)">
+                  <option value="default" ${settings.sortOrder === 'default' ? 'selected' : ''}>Date Added</option>
+                  <option value="az" ${settings.sortOrder === 'az' ? 'selected' : ''}>Title (A-Z)</option>
+                  <option value="za" ${settings.sortOrder === 'za' ? 'selected' : ''}>Title (Z-A)</option>
+                  <option value="artist" ${settings.sortOrder === 'artist' ? 'selected' : ''}>Artist Name</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- App Info -->
+          <div class="settings-section">
+            <h3 class="settings-section-title">About</h3>
+            <div class="settings-item">
+              <div class="settings-item-info">
+                <div class="settings-item-label">AuricPlay v1.0</div>
+                <div class="settings-item-desc">Premium Web Music Player</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
   /* ─────────────────────────────────────────────
      PLAYER BAR UPDATES
   ───────────────────────────────────────────── */
@@ -491,6 +553,7 @@ const UI = (() => {
     renderLibrary,
     renderFavorites,
     renderHistory,
+    renderSettings,
     updatePlayerBar,
     updateProgress,
     updateVolume,
